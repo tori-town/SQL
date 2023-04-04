@@ -1,0 +1,90 @@
+#In this SQL I downloaded the database Chinook to continue practicing SQL analysis. See a variety of questions below
+#First I downloaded the database zip file and connected it to Sqlite Studio
+
+#Get a sense for the data
+
+SELECT * from customers LIMIT 5;
+SELECT * FROM employees LIMIT 5;
+SELECT * FROM invoices LIMIT 5;
+
+#Find Customers who are not in the us
+
+SELECT * from customers
+WHERE country <> 'USA';
+
+#Find Customers who are from Brazil
+
+SELECT * FROM customers
+WHERE country = 'Brazil';
+
+#Find the Invoices of customers who are from Brazil
+
+SELECT i.InvoiceId, i.InvoiceDate,c.FirstName, c.LastName, i.BillingCountry  FROM invoices i
+JOIN customers c
+ON i.Customerid = c.Customerid
+WHERE BillingCountry = 'Brazil';
+
+#Show the Employees who are Sales Agents
+SELECT FirstName, LastName, Title FROM employees
+WHERE title LIKE 'Sales Support Agent';
+
+#Find a unique/distinct list of billing countries from the Invoice table
+SELECT DISTINCT BillingCountry FROM invoices;
+
+#Show the invoices associated with each sales agent
+SELECT inv.InvoiceId, emp.Firstname as Rep_First_Name, emp.LastName AS Rep_Last_Name
+FROM Employees emp 
+JOIN Customers cust ON cust.SupportRepId = emp.EmployeeId
+JOIN Invoices Inv ON Inv.CustomerId = cust.CustomerId;
+
+#Show the Invoice Total, Customer name, Country, and Sales Agent name for all invoices and customers
+SELECT cust.FirstName as cust_firstname, cust.LastName as cust_lastname, inv.BillingCountry, inv.Total, emp.FirstName as rep_firstname, emp.LastName as rep_lastname
+FROM Invoices inv
+JOIN Customers cust ON inv.CustomerID = cust.CustomerID
+JOIN Employees emp ON  emp.EmployeeID= cust.SupportRepId;
+
+#How many Invoices were there in 2009?
+SELECT COUNT(*) FROM Invoices
+WHERE InvoiceDate LIKE '%2009%';
+
+#What are the total sales for 2009?
+SELECT SUM(total) FROM Invoices
+WHERE InvoiceDate LIKE '%2009%';
+
+#Pull each purchased track name with each invoice line ID
+SELECT inv.InvoiceID, tr.name
+FROM tracks tr
+JOIN invoice_items inv ON tr.TrackID = inv.TrackID;
+
+#Now include the purchased track name AND artist name with each invoice line ID
+
+SELECT inv.InvoiceID, tr.name, tr.Composer
+FROM tracks tr
+JOIN invoice_items inv ON tr.TrackID = inv.TrackID;
+
+#Show all the Tracks, and include the Album name, Media type, and Genre
+
+SELECT tr.Name as Track_Name, alb.Title as Album, mt.Name as Media_Type,g.Name as Genre
+FROM tracks tr
+JOIN albums alb ON tr.AlbumId = alb.AlbumId
+JOIN media_types mt ON tr.MediaTypeId = mt.MediaTypeId
+JOIN genres g ON tr.GenreId = g.GenreId;
+
+#Calculate the total sales made by each sales agent
+SELECT emp.FirstName, emp.LastName, ROUND(SUM(Inv.Total), 2) as 'Total Sales' 
+FROM employees emp
+JOIN customers cust ON emp.EmployeeID = cust.SupportRepId
+JOIN invoices inv ON inv.CustomerId = cust.CustomerId
+WHERE emp.Title = 'Sales Support Agent' 
+GROUP BY emp.FirstName;
+
+#Which sales agent made the most dollars in sales in 2009
+SELECT emp.FirstName, emp.LastName, ROUND(SUM(Inv.Total), 2) as 'Total Sales' 
+FROM employees emp
+JOIN customers cust ON emp.EmployeeID = cust.SupportRepId
+JOIN invoices inv ON inv.CustomerId = cust.CustomerId
+WHERE emp.Title = 'Sales Support Agent' 
+AND Inv.InvoiceDate LIKE '%2009%'
+GROUP BY emp.FirstName
+ORDER BY 'Total Sales' DESC
+LIMIT 1;
