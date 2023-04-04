@@ -1,0 +1,33 @@
+--Create a clothing store database
+
+CREATE TABLE store (id INTEGER, category TEXT, item TEXT, price INTEGER, quantity INTEGER);
+
+INSERT INTO store VALUES (1, "Tops", "Turtleneck", 35, 200);
+INSERT INTO store VALUES (2, "Tops", "Sweater", 40, 150);
+INSERT INTO store VALUES (3, "Tops", "Tank", 15, 176);
+INSERT INTO store VALUES (4, "Bottoms", "Shorts", 20, 50);
+INSERT INTO store VALUES (5, "Bottoms", "Sweats", 30, 100);
+INSERT INTO store VALUES (6, "Bottoms", "Jeans", 75, 30);
+INSERT INTO store VALUES (7, "Outerwear", "Raincoat", 20, 300);
+INSERT INTO store VALUES (8, "Outerwear", "Winter Coat", 80, 60);
+INSERT INTO store VALUES (9, "Outerwear", "Denim Jacket", 48, 290);
+INSERT INTO store VALUES (10, "Accessories", "Bracelet", 35, 90);
+INSERT INTO store VALUES (11, "Accessories", "Earrings", 29, 80);
+INSERT INTO store VALUES (12, "Accessories", "Necklace", 52, 70);
+INSERT INTO store VALUES (13, "Shoes", "Sneakers", 55, 90);
+INSERT INTO store VALUES (14, "Shoes", "Sandals", 60, 45);
+INSERT INTO store VALUES (15, "Shoes", "Heels", 76, 88);
+
+--display the database ordered by price. 
+SELECT * FROM store
+ORDER BY price;
+
+--what is the avg price of items in the Bottoms section? 
+SELECT AVG(price) "Avg price of bottom" FROM store
+WHERE category = 'Bottoms';
+
+--what are the 5 lowest stock items? 
+SELECT item, quantity FROM STORE 
+ORDER BY quantity 
+LIMIT 5;
+
