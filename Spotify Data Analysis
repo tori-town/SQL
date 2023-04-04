@@ -82,6 +82,7 @@ Group BY artist_name
 )
 
 #using the average popularity for artists calculated abovce, I pulled every artist with an average popularity of 90 or above and labeled them as a “Top Star”.
+
 SELECT artist_name, average_popularity, 'Top Star' AS tag
 FROM popularity_average_temp
 WHERE average_popularity >= 90;
