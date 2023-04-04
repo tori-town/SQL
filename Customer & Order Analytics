@@ -1,0 +1,61 @@
+#In this SQL, I'm querying a database with multiple tables in it to quantify statistics about customer and order data. 
+
+-- First, filter out all rows that do not include a 6 digit customer id.
+
+SELECT * FROM customers
+WHERE length(order_id) = 6
+AND order_id <> 'Order ID';
+
+--How many orders were placed in January? 
+
+SELECT COUNT(*) FROM JanSales
+WHERE length(orderID) = 6
+AND orderID <> 'Order ID';
+
+--How many of those orders were for an iPhone?
+
+SELECT Product, COUNT(*) FROM JanSales
+WHERE length(orderID) = 6
+AND orderID <> 'Order ID'
+AND Product LIKE'Iphone';
+
+--Select the customer account numbers for all the orders that were placed in February.
+
+SELECT distinct acctnum
+FROM customers cust
+INNER JOIN FebSales Feb
+ON cust.order_id=Feb.orderid
+WHERE length(orderid) = 6 
+AND orderid <> 'Order ID';
+
+--Which product was the cheapest one sold in January, and what was the price?
+
+SELECT Product, MIN(price) FROM JanSales
+GROUP BY Product
+ORDER BY MIN(price)
+LIMIT 1;
+
+
+--What is the total revenue for each product sold in January?
+
+SELECT (SUM(price) * Quantity) AS Revenue, Product
+FROM JanSales
+GROUP BY Product;
+
+--Which products were sold in February at 548 Lincoln St, Seattle, WA 98101, how many of each were sold, and what was the total revenue?
+
+SELECT location, Product, SUM(Quantity), (SUM(price) * Quantity) AS Revenue
+FROM FebSales WHERE location like '548 Lincoln St, Seattle, WA 98101'
+GROUP BY Product;
+
+--How many customers ordered more than 2 products at a time in February, and what was the average amount spent for those customers?
+
+SELECT
+count(DISTINCT cust.acctnum), 
+avg(quantity*price)
+FROM FebSales Feb
+LEFT JOIN customers cust
+ON Feb.orderid=cust.order_id
+WHERE Feb.Quantity>2
+AND length(orderid) = 6 
+AND orderid <> 'Order ID';
