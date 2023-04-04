@@ -64,4 +64,5 @@ AND orderid <> 'Order ID';
 
 SELECT distinct location, Product, Sum(Quantity)
 FROM FebSales
-WHERE location LIKE '%Los Angeles%';
+WHERE location LIKE '%Los Angeles%'
+GROUP BY Product;
