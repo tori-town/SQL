@@ -65,10 +65,24 @@ FROM Spotifydata
 GROUP BY track_name
 ORDER BY avg(danceability) DESC;
 
-#Finally I determined the average danceability for the 10 most popular songs?
+#Then I determined the average danceability for the 10 most popular songs?
 
 SELECT track_name, popularity, avg(danceability)
 FROM Spotifydata
 GROUP BY track_name
 ORDER BY popularity DESC
 LIMIT 10;
+
+#Then I calculated the average popularity for the artists in the Spotify data table. 
+
+WITH popularity_average_temp AS (
+SELECT s.artist_name, avg(s.popularity) AS average_popularity
+FROM Spotifydata s
+Group BY artist_name
+)
+
+#using the average popularity for artists calculated abovce, I pulled every artist with an average popularity of 90 or above and labeled them as a “Top Star”.
+SELECT artist_name, average_popularity, 'Top Star' AS tag
+FROM popularity_average_temp
+WHERE average_popularity >= 90;
+
