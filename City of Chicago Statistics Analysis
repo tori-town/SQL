@@ -62,10 +62,29 @@ LIMIT 1);
 #After determining the commuity area with the highest number of recorded crimes
 #I used a subquery to determine the name of that commuity area
 
-
 SELECT COMMUNITY_AREA_NUMBER, COUNT(ID) AS "C_ID" FROM CHICAGOCRIMEDATA
 GROUP BY COMMUNITY_AREA_NUMBER
 ORDER BY C_ID DESC;
 
 SELECT COMMUNITY_AREA_NAME FROM CHICAGOCENSUS WHERE COMMUNITY_AREA_NUMBER IN
 (SELECT COMMUNITY_AREA_NUMBER FROM CHICAGOCRIMEDATA WHERE COMMUNITY_AREA_NUMBER=25);
+
+#Next I listed the case number, type of crime and community area for all crimes in community area number 18
+
+SELECT CASE_NUMBER, PRIMARY_TYPE, COMMUNITY_AREA_NUMBER
+FROM CHICAGOCRIMEDATA 
+WHERE COMMUNITY_AREA_NUMBER = 18;
+
+#Next I listed all crimes that took place at a school. Include case number, crime type and community name
+
+SELECT CASE_NUMBER, PRIMARY_TYPE, COMMUNITY_AREA_NUMBER
+FROM CHICAGOCRIMEDATA 
+WHERE LOCATION_DESCRIPTION LIKE '%SCHOOL%';
+
+#Then, for the communities of Oakland, Armour Square, Edgewater and CHICAGO I listed the associated community_area_numbers and the case_numbers.
+SELECT ccd.COMMUNITY_AREA_NUMBER, ccd.CASE_NUMBER FROM CHICAGOCRIMEDATA CCD
+FULL OUTER JOIN CHICAGOCENSUS CC ON CCD.COMMUNITY_AREA_NUMBER = CC.COMMUNITY_AREA_NUMBER
+WHERE COMMUNITY_AREA_NAME = 'Oakland'
+OR COMMUNITY_AREA_NAME = 'Armor Square'
+OR COMMUNITY_AREA_NAME = 'Edgewater'
+OR COMMUNITY_AREA_NAME = 'CHICAGO';
