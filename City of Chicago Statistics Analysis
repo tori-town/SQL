@@ -1,0 +1,71 @@
+## For this project, I queried sample reports from the City of Chicago including crime reports, public school safety reports, and the Chicago census.
+## This project was completed as part of the IBM Data Science Certificate
+
+#First, I determined the total number of recorded crimes in the report
+
+SELECT COUNT(*) FROM CHICAGOCRIMEDATA;
+
+#Then I found all community areas with recorded crimes involving am minor
+
+SELECT COMMUNITY_AREA_NUMBER, DESCRIPTION FROM CHICAGOCRIMEDATA
+WHERE DESCRIPTION LIKE '%MINOR%'
+AND COMMUNITY_AREA_NUMBER IS NOT NULL;
+
+#Then, I located all community areas with a per-capita-income lower than 11000
+
+SELECT COMMUNITY_AREA_NUMBER, COMMUNITY_AREA_NAME, PER_CAPITA_INCOME FROM CHICAGOCENSUS
+WHERE PER_CAPITA_INCOME < 11000;
+
+#Next, I found all case numbers involving a minor
+
+SELECT CASE_NUMBER FROM CHICAGOCRIMEDATA
+WHERE DESCRIPTION LIKE '%MINOR%';
+
+#Then I determined which recorded crimes inovled a kidnapping of a child
+
+SELECT * FROM CHICAGOCRIMEDATA
+WHERE PRIMARY_TYPE = 'KIDNAPPING' AND DESCRIPTION LIKE '%CHILD%';
+
+#Then I looked at all types of crimes recorded as happening at a school
+
+SELECT DISTINCT PRIMARY_TYPE FROM CHICAGOCRIMEDATA
+WHERE LOCATION_DESCRIPTION LIKE '%SCHOOL%';
+
+#I then determined the average safety rating of each type of school
+
+SELECT AVG(SAFETY_SCORE), ELEMENTARY_MIDDLE_OR_HIGH_SCHOOL FROM CHICAGOPUBLICSCHOOLS
+GROUP BY ELEMENTARY_MIDDLE_OR_HIGH_SCHOOL;
+
+#Next I looked at the 5 community areas with the highest percent of households below the poverty line
+
+SELECT COMMUNITY_AREA_NUMBER, COMMUNITY_AREA_NAME, PERCENT_HOUSEHOLDS_BELOW_POVERTY 
+FROM CHICAGOCENSUS
+ORDER BY PERCENT_HOUSEHOLDS_BELOW_POVERTY DESC
+LIMIT 5;
+
+#Then I found the community area with the highest number of recorded crimes
+
+SELECT COMMUNITY_AREA_NUMBER, COUNT(ID) FROM CHICAGOCRIMEDATA
+GROUP BY COMMUNITY_AREA_NUMBER
+ORDER BY COUNT(ID) DESC
+LIMIT 1;
+
+#Next I determined the community area with the highest hardship index
+
+SELECT COMMUNITY_AREA_NAME
+FROM CHICAGOCENSUS WHERE COMMUNITY_AREA_NAME IN 
+(SELECT COMMUNITY_AREA_NAME FROM CHICAGOCENSUS
+WHERE COMMUNITY_AREA_NAME != 'CHICAGO' 
+ORDER BY HARDSHIP_INDEX DESC
+LIMIT 1);
+
+#After determining the commuity area with the highest number of recorded crimes
+#I used a subquery to determine the name of that commuity area
+
+
+SELECT COMMUNITY_AREA_NUMBER, COUNT(ID) AS "C_ID" FROM CHICAGOCRIMEDATA
+GROUP BY COMMUNITY_AREA_NUMBER
+ORDER BY C_ID DESC;
+
+SELECT COMMUNITY_AREA_NAME FROM CHICAGOCENSUS WHERE COMMUNITY_AREA_NUMBER IN
+(SELECT COMMUNITY_AREA_NUMBER FROM CHICAGOCRIMEDATA WHERE COMMUNITY_AREA_NUMBER=25);
